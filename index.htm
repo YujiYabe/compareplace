@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title> compareplace</title>
+		<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+		<link   type="text/css" href="compareplace-0.2.css" rel="stylesheet" />
+		<script type="text/javascript" src="jquery-3.1.1.js"></script>
+		<script type="text/javascript" src="compareplace-0.2.js"></script>
+		<link rel="shortcut icon" href="favicon.ico">
+		<script type="text/javascript">
+	
+		</script>
+	</head>
+	<body onLoad="onload()">
+
+		<div class="title" >
+		<span class="red">compa</span><span class="perple">re</span><span class="blue">place</span>
+		</div>
+		<br>
+		<span id="target_operation" style="display:none;">1</span>
+
+
+		<table class="menu_table"  >
+			<tr >
+				<td  >
+					<div name="menu_table" onclick="change_menu_table(this)" flag="1" class="padding5px" >
+						正規表現なし置換
+					</div>
+				</td>
+
+				<td  >
+					<div name="menu_table" onclick="change_menu_table(this)" flag="2" class="padding5px" >
+						正規表現置換
+					</div>
+				</td>
+			</tr>
+
+			<tr >
+			</tr>
+
+
+			<tr >
+				<td >
+					<textarea id="pre_word" class="pink"   onkeyup="control_replace()" rows="3"  placeholder="変更前文字列"></textarea>
+				</td>
+
+				<td><textarea id="pos_word" class="aqua" onkeyup="control_replace()" rows="3"  placeholder="変更後文字列"></textarea>	</td>
+			</tr>
+
+
+			<tr>
+				<td id="pre_td" valign="top">
+					<textarea id="pre_phrase" class="pink" onkeyup="control_replace()"  rows="3000"  placeholder="変更前テキスト&#13;&#10;ここに張り付けて下さい" ></textarea>
+				</td>
+
+
+				<td  id="pos_td" valign="top" >
+					<textarea id="pos_phrase" class="aqua" rows="3000" readonly  placeholder="変更後テキスト &#13;&#10;" ></textarea>
+				</td>
+
+			</tr>
+
+		</table>
+
+
+	</body>
+</html>
