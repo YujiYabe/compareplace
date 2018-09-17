@@ -1,5 +1,7 @@
+
+
 html {/* ============================================== */
-    font-family: "MS Gothic", "Osaka-Mono", Consolas, 'Courier New', Courier, Monaco, monospace;
+    font-family:  'Noto Sans Mono CJK JP Regular', 'MS Gothic', 'Osaka', Consolas, 'Courier New', Courier, Monaco, monospace;
     font-size: 12px;
 }/* ============================================== */
 
@@ -68,10 +70,12 @@ textarea { /* ============================================== */
 }/* ============================================== */
 
 .pink { /* ============================================== */
+    font-family:  'Noto Sans Mono CJK JP Regular', 'MS Gothic', 'Osaka', Consolas, 'Courier New', Courier, Monaco, monospace;
     background-color: #FFE8EC;
 }/* ============================================== */
 
 .aqua { /* ============================================== */
+    font-family:  'Noto Sans Mono CJK JP Regular', 'MS Gothic', 'Osaka', Consolas, 'Courier New', Courier, Monaco, monospace;
     background-color: #CEECF5;
 }/* ============================================== */
 
