@@ -98,7 +98,7 @@
 				pos_txtbody: '',
 				replace_mode: 1,
 				keyword_rowHeight: 2,
-				txtBody_rowHeight: 8,
+				txtBody_rowHeight: 30,
 			},
 			mounted() {
 				window.addEventListener('scroll', this.handleScroll);
@@ -122,26 +122,28 @@
 				},
 
 				controlReplace() {
-					let pre_keyword = this.pre_keyword;
-					let pos_keyword = this.pos_keyword;
-					let pre_txtbody = this.pre_txtbody;
+					if (this.pre_keyword != "") {
+						let pre_keyword = this.pre_keyword;
+						let pos_keyword = this.pos_keyword;
+						let pre_txtbody = this.pre_txtbody;
 
-					switch (this.replace_mode) {
-						case 1:
-							this.pos_txtbody = pre_txtbody.split(pre_keyword).join(pos_keyword);
-							localStorage.setItem("compareplace", this.pos_txtbody);
-							break;
-						case 2:
-							this.pos_txtbody = pre_txtbody.replace(new RegExp(pre_keyword, "g"), pos_keyword);
-							localStorage.setItem("compareplace", this.pos_txtbody);
-							break;
+						switch (this.replace_mode) {
+							case 1:
+								this.pos_txtbody = pre_txtbody.split(pre_keyword).join(pos_keyword);
+								localStorage.setItem("compareplace", this.pos_txtbody);
+								break;
+							case 2:
+								this.pos_txtbody = pre_txtbody.replace(new RegExp(pre_keyword, "g"), pos_keyword);
+								localStorage.setItem("compareplace", this.pos_txtbody);
+								break;
+						}
 					}
 				},
 
 				classAplly(select) {
 					let one = select;
 					let two = this.replace_mode;
-					let applyColor = one === two ? " primary" : "grey";
+					let applyColor = one === two ? "purple lighten-3" : "grey";
 					return applyColor;
 				},
 
