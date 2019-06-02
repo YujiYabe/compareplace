@@ -20,8 +20,8 @@
 					<v-layout justify-center>
 						<v-flex xs12>
 							<div class="title_text display-4">
-									<span class="text_red">compa</span><span class="text_perple">re</span><span
-										class="text_blue">place</span>
+								<span class="text_red">compa</span><span class="text_perple">re</span><span
+									class="text_blue">place</span>
 							</div>
 						</v-flex>
 					</v-layout>
@@ -36,12 +36,12 @@
 
 					<v-layout row wrap justify-center>
 						<v-flex xs6>
-							<v-card flat dark :data-mode="1" :class="classAplly(1)" v-on:click="changeMode(1)">
+							<v-card flat dark :class="classAplly(1)" v-on:click="changeMode(1)">
 								<v-card-text>正規表現なし置換</v-card-text>
 							</v-card>
 						</v-flex>
 						<v-flex xs6>
-							<v-card flat dark :data-mode="2" :class="classAplly(2)" v-on:click="changeMode(2)">
+							<v-card flat dark :class="classAplly(2)" v-on:click="changeMode(2)">
 								<v-card-text>正規表現あり置換</v-card-text>
 							</v-card>
 						</v-flex>
@@ -50,33 +50,36 @@
 
 
 					<!-- keyword area ------------------------------------------ -->
-					<v-layout row wrap justify-center  :class="{'sticky': position > 0}">
+					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
 
-						<v-flex xs6 color="text_red">
-							<v-textarea v-on:keyup="controlReplace" background-color="font_mono bg_pink_keyword" auto-grow
-								id="pre_keyword" v-model="pre_keyword" placeholder="置換前文字列" rows="2">
+						<v-flex xs6>
+							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
+								v-model="pre_keyword" v-on:keydown.tab.prevent="insertTab('pre_keyword')"
+								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列">
 							</v-textarea>
 
 						</v-flex>
 
 						<v-flex xs6>
-							<v-textarea v-on:keyup="controlReplace" background-color="font_mono bg_aqua_keyword" auto-grow
-								id="pos_keyword" v-model="pos_keyword" placeholder="置換後文字列" rows="2">
+							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
+								v-model="pos_keyword" v-on:keydown.tab.prevent="insertTab('pos_keyword')"
+								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
 
 					<!-- replace area ------------------------------------------ -->
-					<v-layout row wrap justify-center class="z_index1">
+					<v-layout row wrap justify-center class="z_index_txtBody">
 
 						<v-flex xs6>
-							<v-textarea v-on:keyup="controlReplace" background-color="font_mono bg_pink" id="pre_replace"
-								v-model="pre_replace" placeholder="変更前テキスト" rows="200" auto-grow>
+							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_pink"
+								v-model="pre_txtbody" placeholder="変更前テキスト"
+								v-on:keydown.tab.prevent="insertTab('pre_txtbody')" v-on:keyup="controlReplace">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs6>
-							<v-textarea background-color="font_mono bg_aqua" id="pos_replace" v-model="pos_replace"
-								placeholder="変更後テキスト" rows="200" auto-grow readonly>
+							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_aqua"
+								v-model="pos_txtbody" placeholder="変更後テキスト" readonly>
 							</v-textarea>
 						</v-flex>
 
@@ -97,43 +100,59 @@
 		var app1 = new Vue({
 			el: '#app',
 			data: {
-				position:null,
+				position: null,
 				pre_keyword: '',
 				pos_keyword: '',
-				pre_replace: '',
-				pos_replace: '',
+				pre_txtbody: '',
+				pos_txtbody: '',
 				replace_mode: 1,
+				keyword_rowHeight: 2,
+				txtBody_rowHeight: 8,
 			},
 			mounted() {
 				window.addEventListener('scroll', this.handleScroll);
+				this.pre_txtbody = localStorage.getItem("compareplace");
 			},
+
 			methods: {
 				handleScroll() {
 					this.position = document.documentElement.scrollTop || document.body.scrollTop;
 				},
 
-				controlReplace: function () {
-					let pre_keyword = this.pre_keyword;
-					let pos_keyword = this.pos_keyword;
-					let pre_replace = this.pre_replace;
-					
-					switch(this.replace_mode){
-
-						case 1:
-							this.pos_replace = pre_replace.split(pre_keyword).join(pos_keyword);
-						break;
-
-						case 2:
-							this.pos_replace = pre_replace.replace(new RegExp(pre_keyword, "g"), pos_keyword);
-						break;
+				insertTab(target) {
+					// デフォルト動作停止
+					if (target === "pre_keyword") {
+						this.pre_keyword = this.pre_keyword + "\t";
+					} else if (target === "pos_keyword") {
+						this.pos_keyword = this.pos_keyword + "\t";
+					} else if (target === "pre_txtbody") {
+						this.pos_keyword = this.pos_keyword + "\t";
 					}
 
+				},
+
+				controlReplace() {
+					let pre_keyword = this.pre_keyword;
+					let pos_keyword = this.pos_keyword;
+					let pre_txtbody = this.pre_txtbody;
+
+					switch (this.replace_mode) {
+
+						case 1:
+							this.pos_txtbody = pre_txtbody.split(pre_keyword).join(pos_keyword);
+							localStorage.setItem("compareplace", this.pos_txtbody);
+							break;
+
+						case 2:
+							this.pos_txtbody = pre_txtbody.replace(new RegExp(pre_keyword, "g"), pos_keyword);
+							localStorage.setItem("compareplace", this.pos_txtbody);
+							break;
+					}
 				},
 
 				classAplly(select) {
 					let one = select;
 					let two = this.replace_mode;
-
 					let applyColor = one === two ? " primary" : "grey";
 					return applyColor;
 				},
@@ -142,7 +161,7 @@
 					this.replace_mode = select;
 					this.controlReplace();
 				},
-				
+
 			}
 		})
 	</script>
