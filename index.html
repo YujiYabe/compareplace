@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700,900|Material+Icons">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css">
+	<meta id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+
+<body>
+	<div id="app">
+		<v-app>
+			<v-content>
+
+				<v-container fluid grid-list-md>
+
+					<!-- title ------------------------------------------ -->
+					<v-layout justify-center>
+						<v-flex xs12>
+							<div class="title_text display-4">
+									<span class="text_red">compa</span><span class="text_perple">re</span><span
+										class="text_blue">place</span>
+							</div>
+						</v-flex>
+					</v-layout>
+
+					<br>
+					置換後の結果はブラウザに保存されます。<br>
+					ブラウザを更新すると続けて置換できます。
+					<br>
+
+
+					<!-- switch mode ------------------------------------------ -->
+
+					<v-layout row wrap justify-center>
+						<v-flex xs6>
+							<v-card flat dark :data-mode="1" :class="classAplly(1)" v-on:click="changeMode(1)">
+								<v-card-text>正規表現なし置換</v-card-text>
+							</v-card>
+						</v-flex>
+						<v-flex xs6>
+							<v-card flat dark :data-mode="2" :class="classAplly(2)" v-on:click="changeMode(2)">
+								<v-card-text>正規表現あり置換</v-card-text>
+							</v-card>
+						</v-flex>
+					</v-layout>
+
+
+
+					<!-- keyword area ------------------------------------------ -->
+					<v-layout row wrap justify-center  :class="{'sticky': position > 0}">
+
+						<v-flex xs6 color="text_red">
+							<v-textarea v-on:keyup="controlReplace" background-color="font_mono bg_pink_keyword" auto-grow
+								id="pre_keyword" v-model="pre_keyword" placeholder="置換前文字列" rows="2">
+							</v-textarea>
+
+						</v-flex>
+
+						<v-flex xs6>
+							<v-textarea v-on:keyup="controlReplace" background-color="font_mono bg_aqua_keyword" auto-grow
+								id="pos_keyword" v-model="pos_keyword" placeholder="置換後文字列" rows="2">
+							</v-textarea>
+						</v-flex>
+					</v-layout>
+
+					<!-- replace area ------------------------------------------ -->
+					<v-layout row wrap justify-center class="z_index1">
+
+						<v-flex xs6>
+							<v-textarea v-on:keyup="controlReplace" background-color="font_mono bg_pink" id="pre_replace"
+								v-model="pre_replace" placeholder="変更前テキスト" rows="200" auto-grow>
+							</v-textarea>
+						</v-flex>
+						<v-flex xs6>
+							<v-textarea background-color="font_mono bg_aqua" id="pos_replace" v-model="pos_replace"
+								placeholder="変更後テキスト" rows="200" auto-grow readonly>
+							</v-textarea>
+						</v-flex>
+
+					</v-layout>
+
+
+				</v-container>
+
+			</v-content>
+		</v-app>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+	<link rel="stylesheet" href="compareplace-0.3.css">
+
+	<script>
+		var app1 = new Vue({
+			el: '#app',
+			data: {
+				position:null,
+				pre_keyword: '',
+				pos_keyword: '',
+				pre_replace: '',
+				pos_replace: '',
+				replace_mode: 1,
+			},
+			mounted() {
+				window.addEventListener('scroll', this.handleScroll);
+			},
+			methods: {
+				handleScroll() {
+					this.position = document.documentElement.scrollTop || document.body.scrollTop;
+				},
+
+				controlReplace: function () {
+					let pre_keyword = this.pre_keyword;
+					let pos_keyword = this.pos_keyword;
+					let pre_replace = this.pre_replace;
+					
+					switch(this.replace_mode){
+
+						case 1:
+							this.pos_replace = pre_replace.split(pre_keyword).join(pos_keyword);
+						break;
+
+						case 2:
+							this.pos_replace = pre_replace.replace(new RegExp(pre_keyword, "g"), pos_keyword);
+						break;
+					}
+
+				},
+
+				classAplly(select) {
+					let one = select;
+					let two = this.replace_mode;
+
+					let applyColor = one === two ? " primary" : "grey";
+					return applyColor;
+				},
+
+				changeMode(select) {
+					this.replace_mode = select;
+					this.controlReplace();
+				},
+				
+			}
+		})
+	</script>
+</body>
+
+</html>
