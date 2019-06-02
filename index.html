@@ -32,8 +32,8 @@
 					<br>
 
 
-					<!-- switch mode ------------------------------------------ -->
-					<v-layout row wrap justify-center>
+					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
+						<!-- switch mode ------------------------------------------ -->
 						<v-flex xs6>
 							<v-card flat dark :class="classAplly(1)" v-on:click="changeMode(1)">
 								<v-card-text>正規表現なし置換</v-card-text>
@@ -44,12 +44,8 @@
 								<v-card-text>正規表現あり置換</v-card-text>
 							</v-card>
 						</v-flex>
-					</v-layout>
 
-
-
-					<!-- keyword area ------------------------------------------ -->
-					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
+						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs6>
 							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
 								v-model="pre_keyword" v-on:keydown.tab.prevent="insertTab('pre_keyword')"
@@ -63,6 +59,7 @@
 							</v-textarea>
 						</v-flex>
 					</v-layout>
+
 
 					<!-- replace area ------------------------------------------ -->
 					<v-layout row wrap justify-center class="z_index_txtBody">
