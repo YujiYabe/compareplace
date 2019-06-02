@@ -33,7 +33,6 @@
 
 
 					<!-- switch mode ------------------------------------------ -->
-
 					<v-layout row wrap justify-center>
 						<v-flex xs6>
 							<v-card flat dark :class="classAplly(1)" v-on:click="changeMode(1)">
@@ -51,15 +50,12 @@
 
 					<!-- keyword area ------------------------------------------ -->
 					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
-
 						<v-flex xs6>
 							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
 								v-model="pre_keyword" v-on:keydown.tab.prevent="insertTab('pre_keyword')"
 								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列">
 							</v-textarea>
-
 						</v-flex>
-
 						<v-flex xs6>
 							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
 								v-model="pos_keyword" v-on:keydown.tab.prevent="insertTab('pos_keyword')"
@@ -70,7 +66,6 @@
 
 					<!-- replace area ------------------------------------------ -->
 					<v-layout row wrap justify-center class="z_index_txtBody">
-
 						<v-flex xs6>
 							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_pink"
 								v-model="pre_txtbody" placeholder="変更前テキスト"
@@ -82,12 +77,10 @@
 								v-model="pos_txtbody" placeholder="変更後テキスト" readonly>
 							</v-textarea>
 						</v-flex>
-
 					</v-layout>
 
 
 				</v-container>
-
 			</v-content>
 		</v-app>
 	</div>
@@ -128,7 +121,6 @@
 					} else if (target === "pre_txtbody") {
 						this.pos_keyword = this.pos_keyword + "\t";
 					}
-
 				},
 
 				controlReplace() {
@@ -137,12 +129,10 @@
 					let pre_txtbody = this.pre_txtbody;
 
 					switch (this.replace_mode) {
-
 						case 1:
 							this.pos_txtbody = pre_txtbody.split(pre_keyword).join(pos_keyword);
 							localStorage.setItem("compareplace", this.pos_txtbody);
 							break;
-
 						case 2:
 							this.pos_txtbody = pre_txtbody.replace(new RegExp(pre_keyword, "g"), pos_keyword);
 							localStorage.setItem("compareplace", this.pos_txtbody);
