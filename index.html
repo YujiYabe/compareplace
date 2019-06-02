@@ -2,11 +2,15 @@
 <html>
 
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title> compareplace</title>
+	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700,900|Material+Icons">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css">
 	<meta id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
 </head>
 
 <body>
@@ -31,9 +35,7 @@
 					ブラウザを更新すると続けて置換できます。
 					<br>
 
-
 					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
-
 						<!-- switch mode ------------------------------------------ -->
 						<v-flex xs6>
 							<v-card flat dark :class="classAplly(1)" v-on:click="changeMode(1)">
@@ -61,8 +63,6 @@
 						</v-flex>
 					</v-layout>
 
-
-
 					<!-- replace area ------------------------------------------ -->
 					<v-layout row wrap justify-center class="z_index_txtBody">
 						<v-flex xs6>
@@ -77,7 +77,6 @@
 							</v-textarea>
 						</v-flex>
 					</v-layout>
-
 
 				</v-container>
 			</v-content>
@@ -112,13 +111,13 @@
 				},
 
 				insertTab(target) {
-					// デフォルト動作停止
+					let tabchar = "\t"
 					if (target === "pre_keyword") {
-						this.pre_keyword = this.pre_keyword + "\t";
+						this.pre_keyword = this.pre_keyword + tabchar;
 					} else if (target === "pos_keyword") {
-						this.pos_keyword = this.pos_keyword + "\t";
+						this.pos_keyword = this.pos_keyword + tabchar;
 					} else if (target === "pre_txtbody") {
-						this.pos_keyword = this.pos_keyword + "\t";
+						this.pos_keyword = this.pos_keyword + tabchar;
 					}
 				},
 
