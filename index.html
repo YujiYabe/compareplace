@@ -30,50 +30,58 @@
 						</v-flex>
 					</v-layout>
 
-					<br>
-					置換後の結果はブラウザに保存されます。<br>
-					ブラウザを更新すると続けて置換できます。
-					<br>
+					<v-layout justify-center>
+						<v-flex xs10>
+								<br>
+							置換後の結果はブラウザに保存されます。<br>
+							ブラウザを更新すると続けて置換できます。
+						</v-flex>
+					</v-layout>
+
 
 					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
 						<!-- switch mode ------------------------------------------ -->
-						<v-flex xs6>
+						<v-flex xs5>
 							<v-card flat dark :class="classAplly(1)" v-on:click="changeMode(1)">
 								<v-card-text>正規表現なし置換</v-card-text>
 							</v-card>
 						</v-flex>
-						<v-flex xs6>
+						<v-flex xs5>
 							<v-card flat dark :class="classAplly(2)" v-on:click="changeMode(2)">
 								<v-card-text>正規表現あり置換</v-card-text>
 							</v-card>
 						</v-flex>
 
 						<!-- keyword area ------------------------------------------ -->
-						<v-flex xs6>
+						<v-flex xs5>
 							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
 								v-model="pre_keyword" v-on:keydown.tab.prevent="insertTab('pre_keyword')"
-								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列">
+								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列"
+								color="green">
 							</v-textarea>
 						</v-flex>
-						<v-flex xs6>
+						<v-flex xs5>
 							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
 								v-model="pos_keyword" v-on:keydown.tab.prevent="insertTab('pos_keyword')"
-								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列">
+								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列"
+								color="yellow">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
 
 					<!-- replace area ------------------------------------------ -->
 					<v-layout row wrap justify-center class="z_index_txtBody">
-						<v-flex xs6>
+						<v-flex xs5>
 							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_pink"
 								v-model="pre_txtbody" placeholder="変更前テキスト"
-								v-on:keydown.tab.prevent="insertTab('pre_txtbody')" v-on:keyup="controlReplace">
+								v-on:keydown.tab.prevent="insertTab('pre_txtbody')" v-on:keyup="controlReplace"
+								color="green">
 							</v-textarea>
 						</v-flex>
-						<v-flex xs6>
+						<v-flex xs5>
 							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_aqua"
-								v-model="pos_txtbody" placeholder="変更後テキスト" readonly>
+								v-model="pos_txtbody" placeholder="変更後テキスト" readonly
+								color="yellow">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
