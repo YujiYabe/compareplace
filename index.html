@@ -32,7 +32,7 @@
 
 					<v-layout justify-center>
 						<v-flex xs10>
-								<br>
+							<br>
 							置換後の結果はブラウザに保存されます。<br>
 							ブラウザを更新すると続けて置換できます。
 						</v-flex>
@@ -54,17 +54,15 @@
 
 						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs5>
-							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
+							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace" id="pre_keyword"
 								v-model="pre_keyword" v-on:keydown.tab.prevent="insertTab('pre_keyword')"
-								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列"
-								color="green">
+								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
-							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace"
+							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace" id="pos_keyword"
 								v-model="pos_keyword" v-on:keydown.tab.prevent="insertTab('pos_keyword')"
-								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列"
-								color="yellow">
+								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
@@ -73,15 +71,14 @@
 					<v-layout row wrap justify-center class="z_index_txtBody">
 						<v-flex xs5>
 							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_pink"
-								v-model="pre_txtbody" placeholder="変更前テキスト"
+								id="pre_txtbody" v-model="pre_txtbody" placeholder="変更前テキスト"
 								v-on:keydown.tab.prevent="insertTab('pre_txtbody')" v-on:keyup="controlReplace"
 								color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
 							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_aqua"
-								v-model="pos_txtbody" placeholder="変更後テキスト" readonly
-								color="yellow">
+								v-model="pos_txtbody" placeholder="変更後テキスト" readonly color="yellow">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
@@ -119,14 +116,51 @@
 				},
 
 				insertTab(target) {
-					// let tabchar = "\t"
-					// if (target === "pre_keyword") {
-					// 	this.pre_keyword = this.pre_keyword + tabchar;
-					// } else if (target === "pos_keyword") {
-					// 	this.pos_keyword = this.pos_keyword + tabchar;
-					// } else if (target === "pre_txtbody") {
-					// 	this.pos_keyword = this.pos_keyword + tabchar;
-					// }
+					let tabchar = "\t"
+					if (target === "pre_keyword") {
+						// this.pre_keyword = this.pre_keyword + tabchar;
+						let obj = document.getElementById("pre_keyword"); // オブジェクト取得
+						let sPos = obj.selectionStart
+						let ePos = obj.selectionEnd
+						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+
+						let cPos = sPos + tabchar.length;
+
+						console.log(addStr);
+						obj.value = addStr;
+						this.pre_keyword = addStr;
+						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
+
+					} else if (target === "pos_keyword") {
+						let obj = document.getElementById("pos_keyword"); // オブジェクト取得
+						let sPos = obj.selectionStart
+						let ePos = obj.selectionEnd
+						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+
+						let cPos = sPos + tabchar.length;
+
+						// console.log(addStr);
+						obj.value = addStr;
+						this.pos_keyword = addStr;
+						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
+
+					} else if (target === "pre_txtbody") {
+						let obj = document.getElementById("pre_txtbody"); // オブジェクト取得
+						let sPos = obj.selectionStart
+						let ePos = obj.selectionEnd
+						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+
+						let cPos = sPos + tabchar.length;
+
+						console.log(addStr);
+
+						obj.value = addStr;
+						this.pre_txtbody = addStr;
+
+						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
+
+					}
+
 				},
 
 				controlReplace() {
