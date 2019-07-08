@@ -39,29 +39,29 @@
 					</v-layout>
 
 
-					<v-layout row wrap justify-center :class="{'sticky': position > 0}">
+					<v-layout row wrap justify-center :class="{'sticky': dataPosition > 0}">
 						<!-- switch mode ------------------------------------------ -->
 						<v-flex xs5>
-							<v-card flat dark :class="classAplly(1)" v-on:click="changeMode(1)">
+							<v-card flat dark id='mode1' :class="methodClassAplly(1)" v-on:click="methodChangeMode(1)">
 								<v-card-text>正規表現なし置換</v-card-text>
 							</v-card>
 						</v-flex>
 						<v-flex xs5>
-							<v-card flat dark :class="classAplly(2)" v-on:click="changeMode(2)">
+							<v-card flat dark id='mode2' :class="methodClassAplly(2)" v-on:click="methodChangeMode(2)">
 								<v-card-text>正規表現あり置換</v-card-text>
 							</v-card>
 						</v-flex>
 
 						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs5>
-							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace" id="pre_keyword"
-								v-model="pre_keyword" v-on:keydown.tab.prevent="insertTab('pre_keyword')"
+							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace" id="id_pre_keyword"
+								v-model="dataPreKeyword" v-on:keydown.tab.prevent="methodInsertTab('id_pre_keyword')"
 								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
-							<v-textarea auto-grow :rows="keyword_rowHeight" v-on:keyup="controlReplace" id="pos_keyword"
-								v-model="pos_keyword" v-on:keydown.tab.prevent="insertTab('pos_keyword')"
+							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace" id="id_pos_keyword"
+								v-model="dataPosKeyword" v-on:keydown.tab.prevent="methodInsertTab('id_pos_keyword')"
 								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
@@ -70,15 +70,15 @@
 					<!-- replace area ------------------------------------------ -->
 					<v-layout row wrap justify-center class="z_index_txtBody">
 						<v-flex xs5>
-							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_pink"
-								id="pre_txtbody" v-model="pre_txtbody" placeholder="変更前テキスト"
-								v-on:keydown.tab.prevent="insertTab('pre_txtbody')" v-on:keyup="controlReplace"
+							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
+								id="id_pre_txtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
+								v-on:keydown.tab.prevent="methodInsertTab('id_pre_txtbody')" v-on:keyup="methodControlReplace"
 								color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
-							<v-textarea :rows="txtBody_rowHeight" auto-grow background-color="font_mono bg_aqua"
-								v-model="pos_txtbody" placeholder="変更後テキスト" readonly color="yellow">
+							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_aqua"
+								v-model="dataPosTxtbody" placeholder="変更後テキスト" readonly color="yellow">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
@@ -96,66 +96,74 @@
 		var app1 = new Vue({
 			el: '#app',
 			data: {
-				position: null,
-				pre_keyword: '',
-				pos_keyword: '',
-				pre_txtbody: '',
-				pos_txtbody: '',
-				replace_mode: 1,
-				keyword_rowHeight: 2,
-				txtBody_rowHeight: 30,
+				dataPosition: null,
+				dataPreKeyword: '',
+				dataPosKeyword: '',
+				dataPreTxtbody: '',
+				dataPosTxtbody: '',
+				dataReplaceMode: 1,
+				dataKeywordRowHeight: 2,
+				dataTxtBodyRowHeight: 30,
 			},
 			mounted() {
-				window.addEventListener('scroll', this.handleScroll);
-				this.pre_txtbody = localStorage.getItem("compareplace");
+				window.addEventListener('scroll', this.methodHandleScroll);
+				this.dataPreKeyword = localStorage.getItem("dataPreKeyword");
+				this.dataPosKeyword = localStorage.getItem("dataPosKeyword");
+				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody");
+				this.dataReplaceMode = localStorage.getItem("dataReplaceMode");
+				this.methodClickReplaceMode();
 			},
 
 			methods: {
-				handleScroll() {
-					this.position = document.documentElement.scrollTop || document.body.scrollTop;
+				methodHandleScroll() {
+					this.dataPosition = document.documentElement.scrollTop || document.body.scrollTop;
 				},
 
-				insertTab(target) {
+				methodClickReplaceMode() {
+					if (this.dataReplaceMode == 1) {
+						document.getElementById("mode1").click();
+					} else {
+						document.getElementById("mode2").click();
+					}
+				},
+
+				methodInsertTab(target) {
 					let tabchar = "\t"
-					if (target === "pre_keyword") {
-						// this.pre_keyword = this.pre_keyword + tabchar;
-						let obj = document.getElementById("pre_keyword"); // オブジェクト取得
+					if (target === "id_pre_keyword") {
+						let obj = document.getElementById("id_pre_keyword"); // オブジェクト取得
 						let sPos = obj.selectionStart
 						let ePos = obj.selectionEnd
 						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
 
 						let cPos = sPos + tabchar.length;
 
-						console.log(addStr);
 						obj.value = addStr;
-						this.pre_keyword = addStr;
+						this.dataPreKeyword = addStr;
 						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
 
-					} else if (target === "pos_keyword") {
-						let obj = document.getElementById("pos_keyword"); // オブジェクト取得
+					} else if (target === "id_pos_keyword") {
+						let obj = document.getElementById("id_pos_keyword"); // オブジェクト取得
 						let sPos = obj.selectionStart
 						let ePos = obj.selectionEnd
 						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
 
 						let cPos = sPos + tabchar.length;
 
-						// console.log(addStr);
 						obj.value = addStr;
-						this.pos_keyword = addStr;
+						this.dataPosKeyword = addStr;
 						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
 
-					} else if (target === "pre_txtbody") {
-						let obj = document.getElementById("pre_txtbody"); // オブジェクト取得
+					} else if (target === "id_pre_txtbody") {
+						let obj = document.getElementById("id_pre_txtbody"); // オブジェクト取得
 						let sPos = obj.selectionStart
 						let ePos = obj.selectionEnd
 						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
 
 						let cPos = sPos + tabchar.length;
 
-						console.log(addStr);
 
 						obj.value = addStr;
-						this.pre_txtbody = addStr;
+						this.dataPreTxtbody = addStr;
 
 						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
 
@@ -163,35 +171,40 @@
 
 				},
 
-				controlReplace() {
-					if (this.pre_keyword != "") {
-						let pre_keyword = this.pre_keyword;
-						let pos_keyword = this.pos_keyword;
-						let pre_txtbody = this.pre_txtbody;
+				methodControlReplace() {
+					if (this.dataPreKeyword != "") {
+						let dataPreKeyword = this.dataPreKeyword;
+						let dataPosKeyword = this.dataPosKeyword;
+						let dataPreTxtbody = this.dataPreTxtbody;
 
-						switch (this.replace_mode) {
+						switch (this.dataReplaceMode) {
 							case 1:
-								this.pos_txtbody = pre_txtbody.split(pre_keyword).join(pos_keyword);
-								localStorage.setItem("compareplace", this.pos_txtbody);
+								this.dataPosTxtbody = dataPreTxtbody.split(dataPreKeyword).join(dataPosKeyword);
+								localStorage.setItem("dataPreTxtbody", this.dataPosTxtbody);
+								localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
+								localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
 								break;
 							case 2:
-								this.pos_txtbody = pre_txtbody.replace(new RegExp(pre_keyword, "g"), pos_keyword);
-								localStorage.setItem("compareplace", this.pos_txtbody);
+								this.dataPosTxtbody = dataPreTxtbody.replace(new RegExp(dataPreKeyword, "g"), dataPosKeyword);
+								localStorage.setItem("dataPreTxtbody", this.dataPosTxtbody);
+								localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
+								localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
 								break;
 						}
 					}
 				},
 
-				classAplly(select) {
+				methodClassAplly(select) {
 					let one = select;
-					let two = this.replace_mode;
+					let two = this.dataReplaceMode;
 					let applyColor = one === two ? "purple lighten-3" : "grey";
 					return applyColor;
 				},
 
-				changeMode(select) {
-					this.replace_mode = select;
-					this.controlReplace();
+				methodChangeMode(select) {
+					this.dataReplaceMode = select;
+					localStorage.setItem("dataReplaceMode", this.dataReplaceMode);
+					this.methodControlReplace();
 				},
 
 			}
