@@ -107,10 +107,11 @@
 			},
 			mounted() {
 				window.addEventListener('scroll', this.methodHandleScroll);
-				this.dataPreKeyword = localStorage.getItem("dataPreKeyword");
-				this.dataPosKeyword = localStorage.getItem("dataPosKeyword");
-				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody");
-				this.dataReplaceMode = localStorage.getItem("dataReplaceMode");
+
+				this.dataPosKeyword = localStorage.getItem("dataPreKeyword") || "" ;
+				this.dataPosKeyword = localStorage.getItem("dataPosKeyword") || "" ;
+				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody") || "" ;
+				this.dataReplaceMode = localStorage.getItem("dataReplaceMode") || "" ;
 				this.methodClickReplaceMode();
 			},
 
