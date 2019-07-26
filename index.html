@@ -8,7 +8,7 @@
 	<link rel="stylesheet"
 		href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700,900|Material+Icons">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.css">
 	<meta id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
 </head>
@@ -42,26 +42,28 @@
 					<v-layout row wrap justify-center :class="{'sticky': dataPosition > 0}">
 						<!-- switch mode ------------------------------------------ -->
 						<v-flex xs5>
-							<v-card flat dark id='mode1' :class="methodClassAplly(1)" v-on:click="methodChangeMode(1)">
+							<v-card flat id='mode1' :class="methodClassAplly(1)" v-on:click="methodChangeMode(1)">
 								<v-card-text>正規表現なし置換</v-card-text>
 							</v-card>
 						</v-flex>
 						<v-flex xs5>
-							<v-card flat dark id='mode2' :class="methodClassAplly(2)" v-on:click="methodChangeMode(2)">
+							<v-card flat id='mode2' :class="methodClassAplly(2)" v-on:click="methodChangeMode(2)">
 								<v-card-text>正規表現あり置換</v-card-text>
 							</v-card>
 						</v-flex>
 
 						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs5>
-							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace" id="id_pre_keyword"
-								v-model="dataPreKeyword" v-on:keydown.tab.prevent="methodInsertTab('id_pre_keyword')"
+							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
+								id="id_pre_keyword" v-model="dataPreKeyword"
+								v-on:keydown.tab.prevent="methodInsertTab('id_pre_keyword')"
 								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
-							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace" id="id_pos_keyword"
-								v-model="dataPosKeyword" v-on:keydown.tab.prevent="methodInsertTab('id_pos_keyword')"
+							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
+								id="id_pos_keyword" v-model="dataPosKeyword"
+								v-on:keydown.tab.prevent="methodInsertTab('id_pos_keyword')"
 								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
@@ -72,8 +74,8 @@
 						<v-flex xs5>
 							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
 								id="id_pre_txtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
-								v-on:keydown.tab.prevent="methodInsertTab('id_pre_txtbody')" v-on:keyup="methodControlReplace"
-								color="green">
+								v-on:keydown.tab.prevent="methodInsertTab('id_pre_txtbody')"
+								v-on:keyup="methodControlReplace" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
@@ -89,7 +91,7 @@
 	</div>
 
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.js"></script>
 	<link rel="stylesheet" href="compareplace-0.3.css">
 
 	<script>
@@ -108,10 +110,10 @@
 			mounted() {
 				window.addEventListener('scroll', this.methodHandleScroll);
 
-				this.dataPreKeyword = localStorage.getItem("dataPreKeyword") || "" ;
-				this.dataPosKeyword = localStorage.getItem("dataPosKeyword") || "" ;
-				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody") || "" ;
-				this.dataReplaceMode = localStorage.getItem("dataReplaceMode") || "" ;
+				this.dataPreKeyword = localStorage.getItem("dataPreKeyword") || "";
+				this.dataPosKeyword = localStorage.getItem("dataPosKeyword") || "";
+				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody") || "";
+				this.dataReplaceMode = localStorage.getItem("dataReplaceMode") || "";
 				this.methodClickReplaceMode();
 			},
 
@@ -186,7 +188,8 @@
 								localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
 								break;
 							case 2:
-								this.dataPosTxtbody = dataPreTxtbody.replace(new RegExp(dataPreKeyword, "g"), dataPosKeyword);
+								this.dataPosTxtbody = dataPreTxtbody.replace(new RegExp(dataPreKeyword, "g"),
+									dataPosKeyword);
 								localStorage.setItem("dataPreTxtbody", this.dataPosTxtbody);
 								localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
 								localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
