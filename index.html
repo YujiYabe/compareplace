@@ -70,9 +70,7 @@
 						<v-flex xs10>
 							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
 								return-object @click:append-outer="methodAddKeywordPairList" @change="methodSelectPair"
-								background-color="font_mono bg_perple" append-outer-icon="edit"></v-select>
-
-
+								background-color="font_mono bg_perple" append-outer-icon="add_box"></v-select>
 						</v-flex>
 					</v-layout>
 
@@ -129,22 +127,27 @@
 
 			methods: {
 				methodAddKeywordPairList() {
-					let dataPreKeyword = this.dataPreKeyword;
-					let dataPosKeyword = this.dataPosKeyword;
-					let summary = dataPreKeyword + ' ⇔ ' + dataPosKeyword;
+					let aliasMode = this.dataReplaceMode == 1 ? 'normal' : 'reglar';
+					let aliasPre = this.dataPreKeyword.replace(/\r?\n/g, '↓').replace(/\t/g, '→');
+					let aliasPos = this.dataPosKeyword.replace(/\r?\n/g, '↓').replace(/\t/g, '→');
+					let summary = aliasMode + ' :［' + aliasPre + '］⇔［' + aliasPos + '］';
 					let pair = {
 						"summary": summary,
-						"pre": dataPreKeyword,
-						"pos": dataPosKeyword
+						"mode": this.dataReplaceMode,
+						"pre": this.dataPreKeyword,
+						"pos": this.dataPosKeyword
 					};
 					this.dataKeywordList.push(pair);
 					localStorage.setItem("dataKeywordList", JSON.stringify(this.dataKeywordList));
 				},
 
 				methodSelectPair() {
-					this.dataPreKeyword = this.dataSelectedList['pre'];
-					this.dataPosKeyword = this.dataSelectedList['pos'];
-					this.methodControlReplace();
+					if (this.dataPreKeyword) {
+						this.dataReplaceMode = this.dataSelectedList['mode'];
+						this.dataPreKeyword = this.dataSelectedList['pre'];
+						this.dataPosKeyword = this.dataSelectedList['pos'];
+						this.methodControlReplace();
+					}
 				},
 
 				methodHandleScroll() {
