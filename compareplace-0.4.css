@@ -40,6 +40,10 @@ textarea {
     background-color: rgb(20, 190, 241);
 }
 
+.bg_perple {
+    background-color: #D0A9F5;
+}
+
 
 .sticky {
     position: -webkit-sticky;

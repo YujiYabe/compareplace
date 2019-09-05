@@ -67,6 +67,13 @@
 								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
+						<v-flex xs10>
+							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
+								return-object @click:append-outer="methodAddKeywordPairList" @change="methodSelectPair"
+								background-color="font_mono bg_perple" append-outer-icon="edit"></v-select>
+
+
+						</v-flex>
 					</v-layout>
 
 					<!-- replace area ------------------------------------------ -->
@@ -92,7 +99,7 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.js"></script>
-	<link rel="stylesheet" href="compareplace-0.3.css">
+	<link rel="stylesheet" href="compareplace-0.4.css">
 
 	<script>
 		var app1 = new Vue({
@@ -106,6 +113,8 @@
 				dataReplaceMode: 1,
 				dataKeywordRowHeight: 2,
 				dataTxtBodyRowHeight: 30,
+				dataKeywordList: [],
+				dataSelectedList: '',
 			},
 			mounted() {
 				window.addEventListener('scroll', this.methodHandleScroll);
@@ -114,10 +123,30 @@
 				this.dataPosKeyword = localStorage.getItem("dataPosKeyword") || "";
 				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody") || "";
 				this.dataReplaceMode = localStorage.getItem("dataReplaceMode") || "";
+				this.dataKeywordList = JSON.parse(localStorage.getItem("dataKeywordList")) || [];
 				this.methodClickReplaceMode();
 			},
 
 			methods: {
+				methodAddKeywordPairList() {
+					let dataPreKeyword = this.dataPreKeyword;
+					let dataPosKeyword = this.dataPosKeyword;
+					let summary = dataPreKeyword + ' ⇔ ' + dataPosKeyword;
+					let pair = {
+						"summary": summary,
+						"pre": dataPreKeyword,
+						"pos": dataPosKeyword
+					};
+					this.dataKeywordList.push(pair);
+					localStorage.setItem("dataKeywordList", JSON.stringify(this.dataKeywordList));
+				},
+
+				methodSelectPair() {
+					this.dataPreKeyword = this.dataSelectedList['pre'];
+					this.dataPosKeyword = this.dataSelectedList['pos'];
+					this.methodControlReplace();
+				},
+
 				methodHandleScroll() {
 					this.dataPosition = document.documentElement.scrollTop || document.body.scrollTop;
 				},
