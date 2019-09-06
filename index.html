@@ -55,25 +55,27 @@
 						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="id_pre_keyword" v-model="dataPreKeyword" 
+								id="idPreKeyword" v-model="dataPreKeyword" 
 								@click:append="methodPreKeywordRemove" append-icon="clear"
-								v-on:keydown.tab.prevent="methodInsertTab('id_pre_keyword')"
+								v-on:keydown.tab.prevent="methodInsertTab('idPreKeyword')"
 								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="id_pos_keyword" v-model="dataPosKeyword" 
+								id="idPosKeyword" v-model="dataPosKeyword" 
 								@click:append="methodPosKeywordRemove" append-icon="clear"
-								v-on:keydown.tab.prevent="methodInsertTab('id_pos_keyword')"
+								v-on:keydown.tab.prevent="methodInsertTab('idPosKeyword')"
 								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
+						<!-- selectbox --------------------- -->
 						<v-flex xs10>
 							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
 								return-object @change="methodSelectPair" background-color="font_mono bg_perple"
+								@click:prepend="methodDeleteKeywordPairList" prepend-icon="delete"
 								@click:append-outer="methodAddKeywordPairList" append-outer-icon="add_box"
-								@click:prepend="methodDeleteKeywordPairList" prepend-icon="delete"></v-select>
+								></v-select>
 						</v-flex>
 					</v-layout>
 
@@ -81,8 +83,9 @@
 					<v-layout row wrap justify-center class="z_index_txtBody">
 						<v-flex xs5>
 							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
-								id="id_pre_txtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
-								v-on:keydown.tab.prevent="methodInsertTab('id_pre_txtbody')" clearable
+								id="idPreTxtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
+								@click:append="methodTxtBodyRemove" append-icon="clear"
+								v-on:keydown.tab.prevent="methodInsertTab('idPreTxtbody')" 
 								v-on:keyup="methodControlReplace" color="green">
 							</v-textarea>
 						</v-flex>
@@ -133,6 +136,7 @@
 				methodDeleteKeywordPairList() {
 					let dataPreKeyword = this.dataPreKeyword;
 					let dataPosKeyword = this.dataPosKeyword;
+					let dataReplaceMode = this.dataReplaceMode;
 					
 					let tempDataKeywordList = this.dataKeywordList.filter(function (value) {
 						// return value < 5;
@@ -145,6 +149,11 @@
 					})
 					this.dataKeywordList = tempDataKeywordList;
 					localStorage.setItem("dataKeywordList", JSON.stringify(this.dataKeywordList));
+				},
+				
+				methodTxtBodyRemove() {
+					this.dataPreTxtbody = "";
+					localStorage.setItem("dataPreTxtbody", this.dataPreTxtbody);
 				},
 				
 				methodPreKeywordRemove() {
@@ -195,8 +204,8 @@
 
 				methodInsertTab(target) {
 					let tabchar = "\t"
-					if (target === "id_pre_keyword") {
-						let obj = document.getElementById("id_pre_keyword"); // オブジェクト取得
+					if (target === "idPreKeyword") {
+						let obj = document.getElementById("idPreKeyword"); // オブジェクト取得
 						let sPos = obj.selectionStart
 						let ePos = obj.selectionEnd
 						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
@@ -207,8 +216,8 @@
 						this.dataPreKeyword = addStr;
 						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
 
-					} else if (target === "id_pos_keyword") {
-						let obj = document.getElementById("id_pos_keyword"); // オブジェクト取得
+					} else if (target === "idPosKeyword") {
+						let obj = document.getElementById("idPosKeyword"); // オブジェクト取得
 						let sPos = obj.selectionStart
 						let ePos = obj.selectionEnd
 						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
@@ -219,8 +228,8 @@
 						this.dataPosKeyword = addStr;
 						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
 
-					} else if (target === "id_pre_txtbody") {
-						let obj = document.getElementById("id_pre_txtbody"); // オブジェクト取得
+					} else if (target === "idPreTxtbody") {
+						let obj = document.getElementById("idPreTxtbody"); // オブジェクト取得
 						let sPos = obj.selectionStart
 						let ePos = obj.selectionEnd
 						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
