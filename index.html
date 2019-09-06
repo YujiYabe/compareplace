@@ -55,22 +55,25 @@
 						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="id_pre_keyword" v-model="dataPreKeyword"
+								id="id_pre_keyword" v-model="dataPreKeyword" 
+								@click:append="methodPreKeywordRemove" append-icon="clear"
 								v-on:keydown.tab.prevent="methodInsertTab('id_pre_keyword')"
 								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="id_pos_keyword" v-model="dataPosKeyword"
+								id="id_pos_keyword" v-model="dataPosKeyword" 
+								@click:append="methodPosKeywordRemove" append-icon="clear"
 								v-on:keydown.tab.prevent="methodInsertTab('id_pos_keyword')"
 								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs10>
 							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
-								return-object @click:append-outer="methodAddKeywordPairList" @change="methodSelectPair"
-								background-color="font_mono bg_perple" append-outer-icon="add_box"></v-select>
+								return-object @change="methodSelectPair" background-color="font_mono bg_perple"
+								@click:append-outer="methodAddKeywordPairList" append-outer-icon="add_box"
+								@click:prepend="methodDeleteKeywordPairList" prepend-icon="delete"></v-select>
 						</v-flex>
 					</v-layout>
 
@@ -79,7 +82,7 @@
 						<v-flex xs5>
 							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
 								id="id_pre_txtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
-								v-on:keydown.tab.prevent="methodInsertTab('id_pre_txtbody')"
+								v-on:keydown.tab.prevent="methodInsertTab('id_pre_txtbody')" clearable
 								v-on:keyup="methodControlReplace" color="green">
 							</v-textarea>
 						</v-flex>
@@ -126,11 +129,39 @@
 			},
 
 			methods: {
+
+				methodDeleteKeywordPairList() {
+					let dataPreKeyword = this.dataPreKeyword;
+					let dataPosKeyword = this.dataPosKeyword;
+					
+					let tempDataKeywordList = this.dataKeywordList.filter(function (value) {
+						// return value < 5;
+						console.log(value['pos']);
+						if( value['mode'] == dataReplaceMode && value['pre'] == dataPreKeyword && value['pos'] == dataPosKeyword ){
+							console.log("delete" + value['summary']);
+						}else{
+							return value;
+						}
+					})
+					this.dataKeywordList = tempDataKeywordList;
+					localStorage.setItem("dataKeywordList", JSON.stringify(this.dataKeywordList));
+				},
+				
+				methodPreKeywordRemove() {
+					this.dataPreKeyword = "";
+					localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
+				},
+
+				methodPosKeywordRemove() {
+					this.dataPosKeyword = "";
+					localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
+				},
+				
 				methodAddKeywordPairList() {
-					let aliasMode = this.dataReplaceMode == 1 ? 'normal' : 'reglar';
+					let aliasMode = this.dataReplaceMode == 1 ? 'nrml :' : 'rglr :';
 					let aliasPre = this.dataPreKeyword.replace(/\r?\n/g, '↓').replace(/\t/g, '→');
 					let aliasPos = this.dataPosKeyword.replace(/\r?\n/g, '↓').replace(/\t/g, '→');
-					let summary = aliasMode + ' :［' + aliasPre + '］⇔［' + aliasPos + '］';
+					let summary = aliasMode + '［' + aliasPre + '］⇔［' + aliasPos + '］';
 					let pair = {
 						"summary": summary,
 						"mode": this.dataReplaceMode,
@@ -142,12 +173,12 @@
 				},
 
 				methodSelectPair() {
-					if (this.dataPreKeyword) {
+					// if (this.dataPreKeyword) {
 						this.dataReplaceMode = this.dataSelectedList['mode'];
 						this.dataPreKeyword = this.dataSelectedList['pre'];
 						this.dataPosKeyword = this.dataSelectedList['pos'];
 						this.methodControlReplace();
-					}
+					// }
 				},
 
 				methodHandleScroll() {
