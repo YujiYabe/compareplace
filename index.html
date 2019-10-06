@@ -55,17 +55,15 @@
 						<!-- keyword area ------------------------------------------ -->
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="idPreKeyword" v-model="dataPreKeyword" 
-								@click:append="methodPreKeywordRemove" append-icon="clear"
-								v-on:keydown.tab.prevent="methodInsertTab('idPreKeyword')"
+								id="idPreKeyword" v-model="dataPreKeyword" @click:append="methodPreKeywordRemove"
+								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
 								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="idPosKeyword" v-model="dataPosKeyword" 
-								@click:append="methodPosKeywordRemove" append-icon="clear"
-								v-on:keydown.tab.prevent="methodInsertTab('idPosKeyword')"
+								id="idPosKeyword" v-model="dataPosKeyword" @click:append="methodPosKeywordRemove"
+								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
 								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
 							</v-textarea>
 						</v-flex>
@@ -74,8 +72,7 @@
 							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
 								return-object @change="methodSelectPair" background-color="font_mono bg_perple"
 								@click:prepend="methodDeleteKeywordPairList" prepend-icon="delete"
-								@click:append-outer="methodAddKeywordPairList" append-outer-icon="add_box"
-								></v-select>
+								@click:append-outer="methodAddKeywordPairList" append-outer-icon="add_box"></v-select>
 						</v-flex>
 					</v-layout>
 
@@ -85,7 +82,7 @@
 							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
 								id="idPreTxtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
 								@click:append="methodTxtBodyRemove" append-icon="clear"
-								v-on:keydown.tab.prevent="methodInsertTab('idPreTxtbody')" 
+								v-on:keydown.tab.prevent="methodInsertTab"
 								v-on:keyup="methodControlReplace" color="green">
 							</v-textarea>
 						</v-flex>
@@ -106,7 +103,7 @@
 	<link rel="stylesheet" href="compareplace-0.4.css">
 
 	<script>
-		var app1 = new Vue({
+		const app1 = new Vue({
 			el: '#app',
 			data: {
 				dataPosition: null,
@@ -123,165 +120,245 @@
 			mounted() {
 				window.addEventListener('scroll', this.methodHandleScroll);
 
-				this.dataPreKeyword = localStorage.getItem("dataPreKeyword") || "";
-				this.dataPosKeyword = localStorage.getItem("dataPosKeyword") || "";
-				this.dataPreTxtbody = localStorage.getItem("dataPreTxtbody") || "";
-				this.dataReplaceMode = localStorage.getItem("dataReplaceMode") || "";
-				this.dataKeywordList = JSON.parse(localStorage.getItem("dataKeywordList")) || [];
+				//localstorage からデータ取り出し
+				this.setDataPreKeyword(this.getLocalStorageDataPreKeyword());
+				this.setDataPosKeyword(this.getLocalStorageDataPosKeyword());
+				this.setDataPreTxtbody(this.getLocalStorageDataPreTxtbody());
+				this.setDataReplaceMode(this.getLocalStorageDataReplaceMode());
+				this.setDataKeywordList(this.getLocalStorageDataKeywordList());
+
 				this.methodClickReplaceMode();
 			},
 
 			methods: {
-
-				methodDeleteKeywordPairList() {
-					let dataPreKeyword = this.dataPreKeyword;
-					let dataPosKeyword = this.dataPosKeyword;
-					let dataReplaceMode = this.dataReplaceMode;
-					
-					let tempDataKeywordList = this.dataKeywordList.filter(function (value) {
-						// return value < 5;
-						console.log(value['pos']);
-						if( value['mode'] == dataReplaceMode && value['pre'] == dataPreKeyword && value['pos'] == dataPosKeyword ){
-							console.log("delete" + value['summary']);
-						}else{
-							return value;
-						}
-					})
-					this.dataKeywordList = tempDataKeywordList;
-					localStorage.setItem("dataKeywordList", JSON.stringify(this.dataKeywordList));
-				},
-				
-				methodTxtBodyRemove() {
-					this.dataPreTxtbody = "";
-					localStorage.setItem("dataPreTxtbody", this.dataPreTxtbody);
-				},
-				
-				methodPreKeywordRemove() {
-					this.dataPreKeyword = "";
-					localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
-				},
-
-				methodPosKeywordRemove() {
-					this.dataPosKeyword = "";
-					localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
-				},
-				
-				methodAddKeywordPairList() {
-					let aliasMode = this.dataReplaceMode == 1 ? 'nrml :' : 'rglr :';
-					let aliasPre = this.dataPreKeyword.replace(/\r?\n/g, '↓').replace(/\t/g, '→');
-					let aliasPos = this.dataPosKeyword.replace(/\r?\n/g, '↓').replace(/\t/g, '→');
-					let summary = aliasMode + '［' + aliasPre + '］⇔［' + aliasPos + '］';
-					let pair = {
-						"summary": summary,
-						"mode": this.dataReplaceMode,
-						"pre": this.dataPreKeyword,
-						"pos": this.dataPosKeyword
-					};
-					this.dataKeywordList.push(pair);
-					localStorage.setItem("dataKeywordList", JSON.stringify(this.dataKeywordList));
-				},
-
-				methodSelectPair() {
-					// if (this.dataPreKeyword) {
-						this.dataReplaceMode = this.dataSelectedList['mode'];
-						this.dataPreKeyword = this.dataSelectedList['pre'];
-						this.dataPosKeyword = this.dataSelectedList['pos'];
-						this.methodControlReplace();
-					// }
-				},
-
-				methodHandleScroll() {
-					this.dataPosition = document.documentElement.scrollTop || document.body.scrollTop;
-				},
-
+				// マウント時のみ起動
 				methodClickReplaceMode() {
-					if (this.dataReplaceMode == 1) {
+					if (this.getDataReplaceMode() == 1) {
 						document.getElementById("mode1").click();
 					} else {
 						document.getElementById("mode2").click();
 					}
 				},
 
-				methodInsertTab(target) {
-					let tabchar = "\t"
-					if (target === "idPreKeyword") {
-						let obj = document.getElementById("idPreKeyword"); // オブジェクト取得
-						let sPos = obj.selectionStart
-						let ePos = obj.selectionEnd
-						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+				methodDeleteKeywordPairList() {
 
-						let cPos = sPos + tabchar.length;
+					const tempDataKeywordList = this.getDataKeywordList().filter(function (value) {
+						if (
+							value['pre'] == this.getDataPreKeyword() &&
+							value['pos'] == this.getDataPosKeyword() &&
+							value['mode'] == this.getDataReplaceMode()
+						) {
+							console.log("deleted : " + value['summary']);
+						} else {
+							return value;
+						}
+					})
 
-						obj.value = addStr;
-						this.dataPreKeyword = addStr;
-						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
+					this.setDataKeywordList(tempDataKeywordList);
+				},
 
-					} else if (target === "idPosKeyword") {
-						let obj = document.getElementById("idPosKeyword"); // オブジェクト取得
-						let sPos = obj.selectionStart
-						let ePos = obj.selectionEnd
-						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+				methodTxtBodyRemove() {
+					this.setDataPreTxtbody("");
+				},
 
-						let cPos = sPos + tabchar.length;
+				methodPreKeywordRemove() {
+					this.setDataPreKeyword("");
+				},
 
-						obj.value = addStr;
-						this.dataPosKeyword = addStr;
-						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
+				methodPosKeywordRemove() {
+					this.setDataPosKeyword("");
+				},
 
-					} else if (target === "idPreTxtbody") {
-						let obj = document.getElementById("idPreTxtbody"); // オブジェクト取得
-						let sPos = obj.selectionStart
-						let ePos = obj.selectionEnd
-						let addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+				methodAddKeywordPairList() {
+					const aliasMode = this.getDataReplaceMode() == 1 ? 'nrml =' : 'rglr =';
+					const aliasPre = this.getDataPreKeyword().replace(/\r?\n/g, '↓').replace(/\t/g, '→');
+					const aliasPos = this.getDataPosKeyword().replace(/\r?\n/g, '↓').replace(/\t/g, '→');
+					const summary = aliasMode + '［' + aliasPre + '］⇔［' + aliasPos + '］';
+					const pair = {
+						"summary": summary,
+						"mode": this.getDataReplaceMode(),
+						"pre": this.getDataPreKeyword(),
+						"pos": this.getDataPosKeyword(),
+					};
+					const dataKeywordList = this.getDataKeywordList();
+					dataKeywordList.push(pair);
+					this.setDataKeywordList(dataKeywordList);
+				},
 
-						let cPos = sPos + tabchar.length;
+				methodSelectPair() {
+					const dataSelectedList = this.getDataSelectedList();
+					this.setDataReplaceMode(dataSelectedList['mode']);
+					this.setDataPreKeyword(dataSelectedList['pre']);
+					this.setDataPosKeyword(dataSelectedList['pos']);
 
+					this.methodControlReplace();
+				},
 
-						obj.value = addStr;
-						this.dataPreTxtbody = addStr;
+				methodHandleScroll() {
+					this.setDataPosition(document.documentElement.scrollTop || document.body.scrollTop);
+				},
 
-						obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
+				// methodInsertTab(target) {
+				methodInsertTab(event) {
+					alert(event.target.tagName)
+					const tabchar = "\t"
+					const obj = document.getElementById(target); // オブジェクト取得
+					const sPos = obj.selectionStart;
+					const ePos = obj.selectionEnd;
+					const addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
+					const cPos = sPos + tabchar.length;
+					obj.value = addStr;
 
+					switch (target) {
+						case "idPreKeyword":
+							this.setDataPreKeyword(addStr);
+							break;
+						case "idPosKeyword":
+							this.setDataPosKeyword(addStr);
+							break;
+						case "idPreTxtbody":
+							this.setDataPreTxtbody(addStr);
+							break;
 					}
+
+					obj.setSelectionRange(cPos, cPos); // 文字選択状態を初期の状態へ  
 
 				},
 
 				methodControlReplace() {
 					if (this.dataPreKeyword != "") {
-						let dataPreKeyword = this.dataPreKeyword;
-						let dataPosKeyword = this.dataPosKeyword;
-						let dataPreTxtbody = this.dataPreTxtbody;
+						const dataPreKeyword = this.getDataPreKeyword();
+						const dataPosKeyword = this.getDataPosKeyword();
+						const dataPreTxtbody = this.getDataPreTxtbody();
 
-						switch (this.dataReplaceMode) {
+						const dataReplaceMode = this.getDataReplaceMode();
+						let dataPosTxtbody = "";
+						switch (dataReplaceMode) {
 							case 1:
-								this.dataPosTxtbody = dataPreTxtbody.split(dataPreKeyword).join(dataPosKeyword);
-								localStorage.setItem("dataPreTxtbody", this.dataPosTxtbody);
-								localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
-								localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
+								dataPosTxtbody = dataPreTxtbody.split(dataPreKeyword).join(dataPosKeyword);
 								break;
 							case 2:
-								this.dataPosTxtbody = dataPreTxtbody.replace(new RegExp(dataPreKeyword, "g"),
+								dataPosTxtbody = dataPreTxtbody.replace(new RegExp(dataPreKeyword, "g"),
 									dataPosKeyword);
-								localStorage.setItem("dataPreTxtbody", this.dataPosTxtbody);
-								localStorage.setItem("dataPreKeyword", this.dataPreKeyword);
-								localStorage.setItem("dataPosKeyword", this.dataPosKeyword);
 								break;
 						}
+						this.setDataPosTxtbody(dataPosTxtbody);
+						this.setLocalStorageDataPreKeyword(dataPreKeyword);
+						this.setLocalStorageDataPosKeyword(dataPosKeyword);
+
+						// 置換後に置換済みテキストを置換前テキストとして保存
+						this.setLocalStorageDataPreTxtbody(dataPosTxtbody);
 					}
 				},
 
 				methodClassAplly(select) {
-					let one = select;
-					let two = this.dataReplaceMode;
-					let applyColor = one === two ? "purple lighten-3" : "grey";
+					const one = select;
+					const two = this.getDataReplaceMode();
+					const applyColor = one === two ? "purple lighten-3" : "grey";
 					return applyColor;
 				},
 
 				methodChangeMode(select) {
-					this.dataReplaceMode = select;
-					localStorage.setItem("dataReplaceMode", this.dataReplaceMode);
+					this.setDataReplaceMode(select);
 					this.methodControlReplace();
 				},
+
+				// getter _______________
+				getDataPreKeyword() {
+					return this.dataPreKeyword;
+				},
+				getDataPosKeyword() {
+					return this.dataPosKeyword;
+				},
+
+				getDataReplaceMode() {
+					return this.dataReplaceMode;
+				},
+
+				getDataKeywordList() {
+					return this.dataKeywordList;
+				},
+
+				getDataSelectedList() {
+					return this.dataSelectedList;
+				},
+
+				getDataPreTxtbody() {
+					return this.dataPreTxtbody;
+				},
+
+				getLocalStorageDataPreKeyword() {
+					return localStorage.getItem("dataPreKeyword") || "";
+				},
+
+				getLocalStorageDataPosKeyword() {
+					return localStorage.getItem("dataPosKeyword") || "";
+				},
+
+				getLocalStorageDataPreTxtbody() {
+					return localStorage.getItem("dataPreTxtbody") || "";
+				},
+
+				getLocalStorageDataReplaceMode() {
+					return localStorage.getItem("dataReplaceMode") || 1;
+				},
+
+				getLocalStorageDataKeywordList() {
+					return JSON.parse(localStorage.getItem("dataKeywordList")) || [];
+				},
+
+
+
+				// setter _______________
+				setDataPreKeyword(context) {
+					this.dataPreKeyword = context;
+					this.setLocalStorageDataPreKeyword(context);
+				},
+				setDataPosKeyword(context) {
+					this.dataPosKeyword = context;
+					this.setLocalStorageDataPosKeyword(context);
+				},
+				setDataPreTxtbody(context) {
+					this.dataPreTxtbody = context;
+					this.setLocalStorageDataPreTxtbody(context);
+				},
+
+				setDataPosTxtbody(context) {
+					this.dataPosTxtbody = context;
+				},
+
+				setDataReplaceMode(context) {
+					this.dataReplaceMode = context;
+					this.setLocalStorageDataReplaceMode(context);
+				},
+				setDataKeywordList(context) {
+					this.dataKeywordList = context;
+					this.setLocalStorageDataKeywordList(JSON.stringify(context));
+				},
+				setDataPosition(context) {
+					this.dataPosition = context;
+				},
+
+				setLocalStorageDataPreKeyword(context) {
+					localStorage.setItem("dataPreKeyword", context);
+				},
+
+				setLocalStorageDataPosKeyword(context) {
+					localStorage.setItem("dataPosKeyword", context);
+				},
+
+				setLocalStorageDataPreTxtbody(context) {
+					localStorage.setItem("dataPreTxtbody", context);
+				},
+
+				setLocalStorageDataReplaceMode(context) {
+					localStorage.setItem("dataReplaceMode", context);
+				},
+
+				setLocalStorageDataKeywordList(context) {
+					localStorage.setItem("dataKeywordList", context);
+				},
+
 
 			}
 		})
