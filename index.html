@@ -14,7 +14,7 @@
 </head>
 
 <body>
-	<div id="app">
+	<div id="app" style="display:none;">
 		<v-app>
 			<v-content>
 
@@ -63,7 +63,7 @@
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
 								id="idPreKeyword" v-model="dataPreKeyword" @click:append="methodPreKeywordRemove"
 								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								background-color="font_mono bg_pink_keyword"
+								background-color="bg_pink_keyword" class="font_mono"
 								:placeholder="dataDictionary.placeholder.preKeyword" color="green">
 							</v-textarea>
 						</v-flex>
@@ -71,15 +71,15 @@
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
 								id="idPosKeyword" v-model="dataPosKeyword" @click:append="methodPosKeywordRemove"
 								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								background-color="font_mono bg_aqua_keyword"
+								background-color="bg_aqua_keyword" class="font_mono"
 								:placeholder="dataDictionary.placeholder.posKeyword" color="yellow">
 							</v-textarea>
 						</v-flex>
 						<!-- selectbox --------------------- -->
 						<v-flex xs10>
 							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
-								return-object @change="methodSelectKeywordSet" background-color="font_mono bg_perple"
-								@click:prepend="methodDeleteKeywordSetList" prepend-icon="delete"
+								return-object @change="methodSelectKeywordSet" background-color="bg_perple"
+								@click:prepend="methodDeleteKeywordSetList" prepend-icon="delete" class="font_mono"
 								@click:append-outer="methodAddKeywordSetList" append-outer-icon="add_box"
 								:label="dataDictionary.label.selectKeywordSet"></v-select>
 						</v-flex>
@@ -88,15 +88,15 @@
 					<!-- replace area ------------------------------------------ -->
 					<v-layout row wrap justify-center class="z_index_txtBody">
 						<v-flex xs5>
-							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
-								id="idPreTxtbody" v-model="dataPreTxtbody"
+							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="bg_pink"
+								id="idPreTxtbody" v-model="dataPreTxtbody" class="font_mono"
 								:placeholder="dataDictionary.placeholder.preTxtbody" @click:append="methodTxtBodyRemove"
 								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
 								v-on:keyup="methodControlReplace" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
-							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_aqua"
+							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="bg_aqua" class="font_mono"
 								v-model="dataPosTxtbody" :placeholder="dataDictionary.placeholder.posTxtbody" readonly
 								color="yellow">
 							</v-textarea>
@@ -157,6 +157,7 @@
 				this.setDataKeywordList(this.getLocalStorageDataKeywordList());
 
 				this.methodClickReplaceMode();
+				document.getElementById("app").style.display = "";
 			},
 
 			methods: {
@@ -286,7 +287,7 @@
 				methodClassAplly(select) {
 					const one = select;
 					const two = this.getDataReplaceMode();
-					const applyColor = one === two ? "purple lighten-3" : "grey";
+					const applyColor = one === two ? "purple lighten-3  font_mono" : "grey font_mono";
 					return applyColor;
 				},
 
