@@ -43,12 +43,18 @@
 						<!-- switch mode ------------------------------------------ -->
 						<v-flex xs5>
 							<v-card flat id='mode1' :class="methodClassAplly(1)" v-on:click="methodChangeMode(1)">
-								<v-card-text>正規表現なし置換</v-card-text>
+								<v-card-text>
+									{{dataDictionary.normalReplace.icon}}
+									{{dataDictionary.normalReplace.japanese}}
+								</v-card-text>
 							</v-card>
 						</v-flex>
 						<v-flex xs5>
 							<v-card flat id='mode2' :class="methodClassAplly(2)" v-on:click="methodChangeMode(2)">
-								<v-card-text>正規表現あり置換</v-card-text>
+								<v-card-text>
+									{{dataDictionary.regularReplace.icon}}
+									{{dataDictionary.regularReplace.japanese}}
+								</v-card-text>
 							</v-card>
 						</v-flex>
 
@@ -57,22 +63,25 @@
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
 								id="idPreKeyword" v-model="dataPreKeyword" @click:append="methodPreKeywordRemove"
 								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								background-color="font_mono bg_pink_keyword" placeholder="置換前文字列" color="green">
+								background-color="font_mono bg_pink_keyword"
+								:placeholder="dataDictionary.placeholder.preKeyword" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
 							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
 								id="idPosKeyword" v-model="dataPosKeyword" @click:append="methodPosKeywordRemove"
 								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								background-color="font_mono bg_aqua_keyword" placeholder="置換後文字列" color="yellow">
+								background-color="font_mono bg_aqua_keyword"
+								:placeholder="dataDictionary.placeholder.posKeyword" color="yellow">
 							</v-textarea>
 						</v-flex>
 						<!-- selectbox --------------------- -->
 						<v-flex xs10>
 							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
-								return-object @change="methodSelectPair" background-color="font_mono bg_perple"
-								@click:prepend="methodDeleteKeywordPairList" prepend-icon="delete"
-								@click:append-outer="methodAddKeywordPairList" append-outer-icon="add_box"></v-select>
+								return-object @change="methodSelectKeywordSet" background-color="font_mono bg_perple"
+								@click:prepend="methodDeleteKeywordSetList" prepend-icon="delete"
+								@click:append-outer="methodAddKeywordSetList" append-outer-icon="add_box"
+								:label="dataDictionary.label.selectKeywordSet"></v-select>
 						</v-flex>
 					</v-layout>
 
@@ -80,15 +89,16 @@
 					<v-layout row wrap justify-center class="z_index_txtBody">
 						<v-flex xs5>
 							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_pink"
-								id="idPreTxtbody" v-model="dataPreTxtbody" placeholder="変更前テキスト"
-								@click:append="methodTxtBodyRemove" append-icon="clear"
-								v-on:keydown.tab.prevent="methodInsertTab"
+								id="idPreTxtbody" v-model="dataPreTxtbody"
+								:placeholder="dataDictionary.placeholder.preTxtbody" @click:append="methodTxtBodyRemove"
+								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
 								v-on:keyup="methodControlReplace" color="green">
 							</v-textarea>
 						</v-flex>
 						<v-flex xs5>
 							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="font_mono bg_aqua"
-								v-model="dataPosTxtbody" placeholder="変更後テキスト" readonly color="yellow">
+								v-model="dataPosTxtbody" :placeholder="dataDictionary.placeholder.posTxtbody" readonly
+								color="yellow">
 							</v-textarea>
 						</v-flex>
 					</v-layout>
@@ -113,9 +123,28 @@
 				dataPosTxtbody: '',
 				dataReplaceMode: 1,
 				dataKeywordRowHeight: 2,
-				dataTxtBodyRowHeight: 30,
+				dataTxtBodyRowHeight: 15,
 				dataKeywordList: [],
 				dataSelectedList: '',
+				dataDictionary: {
+					normalReplace: {
+						japanese: '正規表現なし置換',
+						icon: '［N］',
+					},
+					regularReplace: {
+						japanese: '正規表現あり置換',
+						icon: '［R］',
+					},
+					placeholder: {
+						preKeyword: "置換前文字列",
+						posKeyword: "置換後文字列",
+						preTxtbody: "変更前テキスト",
+						posTxtbody: "変更後テキスト",
+					},
+					label: {
+						selectKeywordSet: "Keyword set",
+					}
+				},
 			},
 			mounted() {
 				window.addEventListener('scroll', this.methodHandleScroll);
@@ -140,13 +169,16 @@
 					}
 				},
 
-				methodDeleteKeywordPairList() {
+				methodDeleteKeywordSetList() {
+					const dataPreKeyword = this.getDataPreKeyword();
+					const dataPosKeyword = this.getDataPosKeyword();
+					const dataReplaceMode = this.getDataReplaceMode();
 
 					const tempDataKeywordList = this.getDataKeywordList().filter(function (value) {
 						if (
-							value['pre'] == this.getDataPreKeyword() &&
-							value['pos'] == this.getDataPosKeyword() &&
-							value['mode'] == this.getDataReplaceMode()
+							value['pre'] == dataPreKeyword &&
+							value['pos'] == dataPosKeyword &&
+							value['mode'] == dataReplaceMode
 						) {
 							console.log("deleted : " + value['summary']);
 						} else {
@@ -168,24 +200,25 @@
 				methodPosKeywordRemove() {
 					this.setDataPosKeyword("");
 				},
-
-				methodAddKeywordPairList() {
-					const aliasMode = this.getDataReplaceMode() == 1 ? 'nrml =' : 'rglr =';
+				methodAddKeywordSetList() {
+					const dataDictionary = this.getDataDictionary();
+					const aliasMode = this.getDataReplaceMode() == 1 ? dataDictionary.normalReplace.icon + '：' :
+						dataDictionary.regularReplace.icon + '：';
 					const aliasPre = this.getDataPreKeyword().replace(/\r?\n/g, '↓').replace(/\t/g, '→');
 					const aliasPos = this.getDataPosKeyword().replace(/\r?\n/g, '↓').replace(/\t/g, '→');
-					const summary = aliasMode + '［' + aliasPre + '］⇔［' + aliasPos + '］';
-					const pair = {
+					const summary = aliasMode + '［' + aliasPre + '］ー［' + aliasPos + '］';
+					const set = {
 						"summary": summary,
 						"mode": this.getDataReplaceMode(),
 						"pre": this.getDataPreKeyword(),
 						"pos": this.getDataPosKeyword(),
 					};
 					const dataKeywordList = this.getDataKeywordList();
-					dataKeywordList.push(pair);
+					dataKeywordList.push(set);
 					this.setDataKeywordList(dataKeywordList);
 				},
 
-				methodSelectPair() {
+				methodSelectKeywordSet() {
 					const dataSelectedList = this.getDataSelectedList();
 					this.setDataReplaceMode(dataSelectedList['mode']);
 					this.setDataPreKeyword(dataSelectedList['pre']);
@@ -198,18 +231,17 @@
 					this.setDataPosition(document.documentElement.scrollTop || document.body.scrollTop);
 				},
 
-				// methodInsertTab(target) {
 				methodInsertTab(event) {
-					alert(event.target.tagName)
 					const tabchar = "\t"
-					const obj = document.getElementById(target); // オブジェクト取得
+					const targetID = event.target.id;
+					const obj = document.getElementById(targetID);
 					const sPos = obj.selectionStart;
 					const ePos = obj.selectionEnd;
 					const addStr = obj.value.substr(0, sPos) + tabchar + obj.value.substr(ePos);
 					const cPos = sPos + tabchar.length;
 					obj.value = addStr;
 
-					switch (target) {
+					switch (targetID) {
 						case "idPreKeyword":
 							this.setDataPreKeyword(addStr);
 							break;
@@ -287,6 +319,12 @@
 					return this.dataPreTxtbody;
 				},
 
+				getDataDictionary() {
+					return this.dataDictionary;
+				},
+
+
+
 				getLocalStorageDataPreKeyword() {
 					return localStorage.getItem("dataPreKeyword") || "";
 				},
@@ -306,7 +344,6 @@
 				getLocalStorageDataKeywordList() {
 					return JSON.parse(localStorage.getItem("dataKeywordList")) || [];
 				},
-
 
 
 				// setter _______________
