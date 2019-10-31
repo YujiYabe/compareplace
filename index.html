@@ -2,116 +2,112 @@
 <html>
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title> compareplace</title>
-	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="stylesheet"
-		href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700,900|Material+Icons">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.css">
-	<meta id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title> compareplace</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Roboto+Mono:100,300,400,500,700,900|Material+Icons">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+  <link href="./lib/vuetify.min.css" rel="stylesheet">
+  <meta id="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
 </head>
 
 <body>
-	<div id="app" style="display:none;">
-		<v-app>
-			<v-content>
+  <div id="app" style="display:none;">
+    <v-app>
+      <v-content>
 
-				<v-container fluid grid-list-md>
+        <v-container fluid grid-list-md>
 
-					<!-- title ------------------------------------------ -->
-					<v-layout justify-center>
-						<v-flex xs12>
-							<div class="title_text display-4">
-								<span class="text_red">compa</span><span class="text_perple">re</span><span
-									class="text_blue">place</span>
-							</div>
-						</v-flex>
-					</v-layout>
+          <!-- title ------------------------------------------ -->
+          <v-layout justify-center>
+            <v-flex xs12>
+              <div class="title_text display-4">
+                <span style="font-family: 'Lobster'" class="text_red">compa</span><span style="font-family: 'Lobster'"
+                  class="text_perple">re</span><span style="font-family: 'Lobster'" class="text_blue">place</span>
+              </div>
+            </v-flex>
+          </v-layout>
 
-					<v-layout justify-center>
-						<v-flex xs10>
-							<br>
-							置換後の結果はブラウザに保存されます。<br>
-							ブラウザを更新すると続けて置換できます。
-						</v-flex>
-					</v-layout>
+          <v-layout justify-center>
+            <v-flex xs10>
+              <br>
+              置換後の結果はブラウザに保存されます。<br>
+              ブラウザを更新すると続けて置換できます。
+            </v-flex>
+          </v-layout>
 
 
-					<v-layout row wrap justify-center :class="{'sticky': dataPosition > 0}">
-						<!-- switch mode ------------------------------------------ -->
-						<v-flex xs5>
-							<v-card flat id='mode1' :class="methodClassAplly(1)" v-on:click="methodChangeMode(1)">
-								<v-card-text>
-									{{dataDictionary.normalReplace.icon}}
-									{{dataDictionary.normalReplace.japanese}}
-								</v-card-text>
-							</v-card>
-						</v-flex>
-						<v-flex xs5>
-							<v-card flat id='mode2' :class="methodClassAplly(2)" v-on:click="methodChangeMode(2)">
-								<v-card-text>
-									{{dataDictionary.regularReplace.icon}}
-									{{dataDictionary.regularReplace.japanese}}
-								</v-card-text>
-							</v-card>
-						</v-flex>
+          <v-layout row wrap justify-center :class="{'sticky': dataPosition > 0}">
+            <!-- switch mode ------------------------------------------ -->
+            <v-flex xs5>
+              <v-card flat id='mode1' :class="methodClassAplly(1)" v-on:click="methodChangeMode(1)">
+                <v-card-text>
+                  {{dataDictionary.normalReplace.icon}}
+                  {{dataDictionary.normalReplace.japanese}}
+                </v-card-text>
+              </v-card>
+            </v-flex>
+            <v-flex xs5>
+              <v-card flat id='mode2' :class="methodClassAplly(2)" v-on:click="methodChangeMode(2)">
+                <v-card-text>
+                  {{dataDictionary.regularReplace.icon}}
+                  {{dataDictionary.regularReplace.japanese}}
+                </v-card-text>
+              </v-card>
+            </v-flex>
 
-						<!-- keyword area ------------------------------------------ -->
-						<v-flex xs5>
-							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="idPreKeyword" v-model="dataPreKeyword" @click:append="methodPreKeywordRemove"
-								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								background-color="bg_pink_keyword" class="font_mono"
-								:placeholder="dataDictionary.placeholder.preKeyword" color="green">
-							</v-textarea>
-						</v-flex>
-						<v-flex xs5>
-							<v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace"
-								id="idPosKeyword" v-model="dataPosKeyword" @click:append="methodPosKeywordRemove"
-								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								background-color="bg_aqua_keyword" class="font_mono"
-								:placeholder="dataDictionary.placeholder.posKeyword" color="yellow">
-							</v-textarea>
-						</v-flex>
-						<!-- selectbox --------------------- -->
-						<v-flex xs10>
-							<v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary"
-								return-object @change="methodSelectKeywordSet" background-color="bg_perple"
-								@click:prepend="methodDeleteKeywordSetList" prepend-icon="delete" class="font_mono"
-								@click:append-outer="methodAddKeywordSetList" append-outer-icon="add_box"
-								:label="dataDictionary.label.selectKeywordSet"></v-select>
-						</v-flex>
-					</v-layout>
+            <!-- keyword area ------------------------------------------ -->
+            <v-flex xs5>
+              <v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace" id="idPreKeyword"
+                v-model="dataPreKeyword" @click:append="methodPreKeywordRemove" append-icon="clear"
+                v-on:keydown.tab.prevent="methodInsertTab" background-color="bg_pink_keyword" class="font_mono"
+                :placeholder="dataDictionary.placeholder.preKeyword" color="green">
+              </v-textarea>
+            </v-flex>
+            <v-flex xs5>
+              <v-textarea auto-grow :rows="dataKeywordRowHeight" v-on:keyup="methodControlReplace" id="idPosKeyword"
+                v-model="dataPosKeyword" @click:append="methodPosKeywordRemove" append-icon="clear"
+                v-on:keydown.tab.prevent="methodInsertTab" background-color="bg_aqua_keyword" class="font_mono"
+                :placeholder="dataDictionary.placeholder.posKeyword" color="yellow">
+              </v-textarea>
+            </v-flex>
+            <!-- selectbox --------------------- -->
+            <v-flex xs10>
+              <v-select :items="dataKeywordList" v-model="dataSelectedList" item-text="summary" return-object
+                @change="methodSelectKeywordSet" background-color="bg_perple"
+                @click:prepend="methodDeleteKeywordSetList" prepend-icon="delete" class="font_mono"
+                @click:append-outer="methodAddKeywordSetList" append-outer-icon="add_box"
+                :label="dataDictionary.label.selectKeywordSet"></v-select>
+            </v-flex>
+          </v-layout>
 
-					<!-- replace area ------------------------------------------ -->
-					<v-layout row wrap justify-center class="z_index_txtBody">
-						<v-flex xs5>
-							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="bg_pink"
-								id="idPreTxtbody" v-model="dataPreTxtbody" class="font_mono"
-								:placeholder="dataDictionary.placeholder.preTxtbody" @click:append="methodTxtBodyRemove"
-								append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
-								v-on:keyup="methodControlReplace" color="green">
-							</v-textarea>
-						</v-flex>
-						<v-flex xs5>
-							<v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="bg_aqua"
-								class="font_mono" v-model="dataPosTxtbody"
-								:placeholder="dataDictionary.placeholder.posTxtbody" readonly color="yellow">
-							</v-textarea>
-						</v-flex>
-					</v-layout>
+          <!-- replace area ------------------------------------------ -->
+          <v-layout row wrap justify-center class="z_index_txtBody">
+            <v-flex xs5>
+              <v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="bg_pink" id="idPreTxtbody"
+                v-model="dataPreTxtbody" class="font_mono" :placeholder="dataDictionary.placeholder.preTxtbody"
+                @click:append="methodTxtBodyRemove" append-icon="clear" v-on:keydown.tab.prevent="methodInsertTab"
+                v-on:keyup="methodControlReplace" color="green">
+              </v-textarea>
+            </v-flex>
+            <v-flex xs5>
+              <v-textarea :rows="dataTxtBodyRowHeight" auto-grow background-color="bg_aqua" class="font_mono"
+                v-model="dataPosTxtbody" :placeholder="dataDictionary.placeholder.posTxtbody" readonly color="yellow">
+              </v-textarea>
+            </v-flex>
+          </v-layout>
 
-				</v-container>
-			</v-content>
-		</v-app>
-	</div>
+        </v-container>
+      </v-content>
+    </v-app>
+  </div>
 
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/1.5.16/vuetify.js"></script>
-	<link rel="stylesheet" href="compareplace-0.4.css">
-	<script src="./index.js"></script>
+  <script src="./lib/vue.min.js"></script>
+  <script src="./lib/vuetify.min.js"></script>
+  <link rel="stylesheet" href="./lib/compareplace-0.4.css">
+  <script src="./lib/index.js"></script>
 
 </body>
 

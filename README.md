@@ -12,7 +12,8 @@
 
 
 ## 使用技術
-- vue
+- vue.js
+- vuetify
 - localstorage
 
 
