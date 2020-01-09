@@ -21,8 +21,7 @@ textarea {
 }
 
 .font_mono {
-  font-family: 'Noto Sans Mono CJK JP Regular', 'MS Gothic', 'Osaka', Consolas,
-    'Courier New', Courier, Monaco, monospace;
+  font-family: 'Osaka', 'Noto Sans Mono CJK JP Regular', 'Courier New', Consolas, monospace,'MS Gothic', Consolas;
 }
 
 .bg_pink {
